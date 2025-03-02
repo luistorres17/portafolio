@@ -1,33 +1,29 @@
 <?php
-use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InfoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/dashboard', [ProjectController::class, 'index'])->name('dashboard');
+    Route::resource('projects', ProjectController::class);
+    Route::get('/info', function () {
+        return view('info');
+    })->name('info');
+    Route::resource('infos', InfoController::class);
+    Route::post('/infos', [InfoController::class, 'store'])->name('infos.store');
+    Route::get('/info', [InfoController::class, 'index'])->name('info.index');
 });
 
-
-
-
-// Grupo de rutas protegidas por autenticación
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
-    Route::resource('/admin/proyectos', ProyectoController::class);
-});
 
 
 
